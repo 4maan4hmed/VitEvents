@@ -26,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
           imageUrl: "assets/doodhinspecter.jpg",
         ),
         EventCard(
-          title: "Baller",
+          title: "mama mia",
         ),
       ],
     ),
@@ -41,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      print('Navigation tapped: $index');
     });
   }
 
@@ -86,3 +87,27 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+// You might want to extract this into a separate screen later
+class ExploreScreen extends StatelessWidget {
+  const ExploreScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      children: const [
+        EventCard(),
+        EventCard(
+          title: "TechFest",
+          date: "10",
+          month: "July",
+          price: 240,
+          imageUrl: "assets/doodhinspecter.jpg",
+        ),
+        EventCard(
+          title: "Baller",
+        ),
+      ],
+    );
+  }
+}

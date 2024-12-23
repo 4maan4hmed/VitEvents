@@ -18,7 +18,7 @@ class EventCard extends StatefulWidget {
     this.date = "12",
     this.month = "JUNE",
     this.price = 100,
-    this.imageUrl = "assets/events/default.jpg",
+    this.imageUrl = "assets/images/default.jpg",
     this.onTap,
   }) : super(key: key);
 
@@ -58,17 +58,28 @@ class _EventCardState extends State<EventCard> {
               Stack(
                 children: [
                   // Event Image
-                  ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(20),
-                    ),
-                    child: Image.asset(
-                      widget.imageUrl,
-                      height: sizeHelper.height(18),
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+                 ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(
+                          widget.imageUrl,
+                          height: sizeHelper.height(18),
+                          width: sizeHelper.width(58),
+                          fit: BoxFit.cover,
+                          alignment: Alignment.topCenter,
+                        ),
+                      ),
+                      
+                      Positioned(
+                        top: 12,
+                        left: 12,
+                        child: _buildDateOverlay(),
+                      ),
+                      
+                      Positioned(
+                        top: 12,
+                        right: 12,
+                        child: _buildBookmarkButton(),
+                      ),
 
                   // Date overlay
                   Positioned(
