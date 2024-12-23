@@ -70,21 +70,19 @@ class AppTypography {
 /// Main application theme
 ThemeData appTheme() {
   return ThemeData(
-    colorScheme: ColorScheme.light(
+    colorScheme: const ColorScheme.light(
       primary: AppColors.primary,
       secondary: AppColors.secondary,
-      background: AppColors.background,
       surface: AppColors.surface,
-      onBackground: AppColors.onBackground,
       onSurface: AppColors.onSurface,
     ),
     scaffoldBackgroundColor: AppColors.background,
-    textTheme: TextTheme(
+    textTheme: const TextTheme(
       displayLarge: AppTypography.displayLarge,
       bodyLarge: AppTypography.bodyLarge,
       bodyMedium: AppTypography.bodyMedium,
     ),
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       backgroundColor: AppColors.primary,
       foregroundColor: AppColors.white,
       elevation: 0,
@@ -102,7 +100,7 @@ ThemeData appTheme() {
         borderRadius: BorderRadius.circular(20),
       ),
     ),
-    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: AppColors.surface,
       selectedItemColor: AppColors.primary,
       unselectedItemColor: AppColors.gray3,
@@ -114,18 +112,32 @@ ThemeData appTheme() {
 void main() => runApp(const CardExampleApp());
 
 /// Root application widget
-class CardExampleApp extends StatelessWidget {
+class CardExampleApp extends StatefulWidget {
   const CardExampleApp({super.key});
 
   @override
+  State<CardExampleApp> createState() => _CardExampleAppState();
+}
+
+class _CardExampleAppState extends State<CardExampleApp> {
+  @override
+  int myIndex = 0;
   Widget build(BuildContext context) {
+    
     return MaterialApp(
       theme: appTheme(),
       home: Scaffold(
         appBar: AppBar(title: const Text('Event Cards')),
         
         bottomNavigationBar: BottomNavigationBar(
-          items: const [
+          onTap: (index){setState(() {
+            myIndex=index;
+          });
+            
+          },
+          currentIndex: myIndex,
+          items: 
+          const [
             BottomNavigationBarItem(
               icon: Icon(Icons.explore),
               label: "Explore",

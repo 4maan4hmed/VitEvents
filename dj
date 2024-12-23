@@ -1,0 +1,17 @@
+[33mcommit 040ef89d29d0d9c853d043556fc01972c5ced38e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mtheming[m[33m)[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Mon Dec 23 10:41:47 2024 +0530
+
+    better file structure
+
+[33mcommit ef8c6dfab35ceb22410748df5ea9d3e5fc6a44d0[m[33m ([m[1;31morigin/theming[m[33m, [m[1;32mmaster[m[33m)[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Sun Dec 22 17:57:38 2024 +0530
+
+    theming done
+
+[33mcommit 0976047709c4edfe691ebdf58259b50573b78622[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Sun Dec 22 16:02:29 2024 +0530
+
+    first commit with Card widget and list view done properly
