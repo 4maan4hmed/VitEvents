@@ -23,10 +23,10 @@ class _HomeScreenState extends State<HomeScreen> {
           date: "10",
           month: "July",
           price: 240,
-          imageUrl: "assets/doodhinspecter.jpg",
+          imageUrl: "assets/images/doodhinspecter.jpg",
         ),
         EventCard(
-          title: "mama mia",
+          title: "bababoi",
         ),
       ],
     ),

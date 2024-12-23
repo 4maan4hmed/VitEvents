@@ -58,36 +58,27 @@ class _EventCardState extends State<EventCard> {
               Stack(
                 children: [
                   // Event Image
-                 ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Image.asset(
-                          widget.imageUrl,
-                          height: sizeHelper.height(18),
-                          width: sizeHelper.width(58),
-                          fit: BoxFit.cover,
-                          alignment: Alignment.topCenter,
+                 Padding(
+                   padding: const EdgeInsets.all(6.0),
+                   child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.asset(
+                            widget.imageUrl,
+                            height: 140,
+                            width: 280,
+                            fit: BoxFit.cover,
+                            alignment: Alignment.topCenter,
+                          ),
                         ),
-                      ),
-                      
-                      Positioned(
-                        top: 12,
-                        left: 12,
-                        child: _buildDateOverlay(),
-                      ),
-                      
-                      Positioned(
-                        top: 12,
-                        right: 12,
-                        child: _buildBookmarkButton(),
-                      ),
-
+                 ),
+                       
                   // Date overlay
                   Positioned(
                     top: 12,
                     left: 12,
                     child: _buildDateOverlay(),
                   ),
-
+    
                   // Bookmark button
                   Positioned(
                     top: 12,
@@ -96,7 +87,7 @@ class _EventCardState extends State<EventCard> {
                   ),
                 ],
               ),
-
+    
               // Event details
               Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -121,7 +112,7 @@ class _EventCardState extends State<EventCard> {
                           children: [
                             Icon(
                               Icons.location_on,
-                              size: 16,
+                              size: 18,
                               color: AppColors.gray3,
                             ),
                             const SizedBox(width: 4),
@@ -152,15 +143,17 @@ class _EventCardState extends State<EventCard> {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
         child: Container(
-          padding: const EdgeInsets.all(8),
+          height:50,
+          width: 50,          
           decoration: BoxDecoration(
             color: AppColors.cardDateBackground.withOpacity(0.3),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               Text(widget.date, style: AppTypography.cardDate),
+              
               Text(widget.month, style: AppTypography.cardMonth),
             ],
           ),
