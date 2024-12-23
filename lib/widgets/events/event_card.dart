@@ -18,7 +18,7 @@ class EventCard extends StatefulWidget {
     this.date = "12",
     this.month = "JUNE",
     this.price = 100,
-    this.imageUrl = "assets/images/default.jpg",
+    this.imageUrl = "assets/images/cars.jpg",
     this.onTap,
   }) : super(key: key);
 
@@ -28,6 +28,7 @@ class EventCard extends StatefulWidget {
 
 class _EventCardState extends State<EventCard> {
   bool isSaved = false;
+  bool isclicked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -35,102 +36,107 @@ class _EventCardState extends State<EventCard> {
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: GestureDetector(
-        onTap: widget.onTap ?? () {},
-        child: Container(
-          width: sizeHelper.width(60), // Card width
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                spreadRadius: 0,
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Image and overlays container
-              Stack(
-                children: [
-                  // Event Image
-                 Padding(
-                   padding: const EdgeInsets.all(6.0),
-                   child: ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.asset(
-                            widget.imageUrl,
-                            height: 140,
-                            width: 280,
-                            fit: BoxFit.cover,
-                            alignment: Alignment.topCenter,
-                          ),
-                        ),
-                 ),
-                       
-                  // Date overlay
-                  Positioned(
-                    top: 12,
-                    left: 12,
-                    child: _buildDateOverlay(),
-                  ),
-    
-                  // Bookmark button
-                  Positioned(
-                    top: 12,
-                    right: 12,
-                    child: _buildBookmarkButton(),
-                  ),
-                ],
-              ),
-    
-              // Event details
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      child: SizedBox(
+        height: 250,
+        child: GestureDetector(
+          onTap: widget.onTap ?? () {},
+          child: Container(
+            
+            width: sizeHelper.width(60), // Card width
+             height: 250, 
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  spreadRadius: 0,
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Image and overlays container
+                Stack(
                   children: [
-                    Text(
-                      widget.title,
-                      style: AppTypography.cardTitle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+                    // Event Image
+                   Padding(
+                     padding: const EdgeInsets.all(6.0),
+                     child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.asset(
+                              widget.imageUrl,
+                              height: 140,
+                              width: 280,
+                              fit: BoxFit.cover,
+                              alignment: Alignment.topCenter,
+                            ),
+                          ),
+                   ),
+                         
+                    // Date overlay
+                    Positioned(
+                      top: 12,
+                      left: 12,
+                      child: _buildDateOverlay(),
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '\$${widget.price.toStringAsFixed(2)}',
-                          style: AppTypography.cardPrice,
-                        ),
-                        const Row(
-                          children: [
-                            Icon(
-                              Icons.location_on,
-                              size: 18,
-                              color: AppColors.gray3,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              '1.2 km',
-                              style: TextStyle(
-                                color: AppColors.gray3,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
+            
+                    // Bookmark button
+                    Positioned(
+                      top: 12,
+                      right: 12,
+                      child: _buildBookmarkButton(),
                     ),
                   ],
                 ),
-              ),
-            ],
+            
+                // Event details
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.title,
+                        style: AppTypography.cardTitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '\$${widget.price.toStringAsFixed(2)}',
+                            style: AppTypography.cardPrice,
+                          ),
+                          const Row(
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                size: 18,
+                                color: AppColors.gray3,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                '1.2 km',
+                                style: TextStyle(
+                                  color: AppColors.gray3,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -161,31 +167,40 @@ class _EventCardState extends State<EventCard> {
       ),
     );
   }
-
   Widget _buildBookmarkButton() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
+
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-        child: Container(
-          height: 36,
-          width: 36,
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: IconButton(
-            padding: EdgeInsets.zero,
-            icon: Icon(
+        child: GestureDetector(
+          onTap: () {
+            setState(() {
+              isSaved = !isSaved;
+              isclicked = !isclicked;
+            });
+            Future.delayed(const Duration(milliseconds: 50), () {
+              setState(() {
+                isclicked = !isclicked;
+              });
+            });
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 50),
+            curve: Curves.easeInOutCubic,
+            height: isclicked ? 34 : 36,
+            width: isclicked ? 34 : 36,
+
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(
               isSaved ? Icons.bookmark : Icons.bookmark_border,
               color: Colors.white,
               size: 20,
             ),
-            onPressed: () {
-              setState(() {
-                isSaved = !isSaved;
-              });
-            },
           ),
         ),
       ),

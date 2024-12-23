@@ -12,31 +12,39 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   // List of screens for each navigation item
-  final List<Widget> _screens = [
-    // Explore Screen
-    ListView(
-      scrollDirection: Axis.horizontal,
-      children: const [
-        EventCard(),
-        EventCard(
-          title: "TechFest",
-          date: "10",
-          month: "July",
-          price: 240,
-          imageUrl: "assets/images/doodhinspecter.jpg",
+final List<Widget> _screens = [
+  // Explore Screen
+  SingleChildScrollView(  // Add this wrapper
+    child: Column(      // Add this to allow for more content
+      children: [
+        SizedBox(      // Replace Container with SizedBox
+          height: 280,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: const [
+              EventCard(),
+              EventCard(
+                title: "TechFest",
+                date: "10",
+                month: "July",
+                price: 240,
+                imageUrl: "assets/images/doodhinspecter.jpg",
+              ),
+              EventCard(
+                title: "bababoi",
+              ),
+            ],
+          ),
         ),
-        EventCard(
-          title: "bababoi",
-        ),
+        // You can add more widgets below the horizontal list if needed
       ],
     ),
-    // Events Screen
-    const Center(child: Text('Events Calendar')),
-    // Saved Screen
-    const Center(child: Text('Saved Events')),
-    // Profile Screen
-    const Center(child: Text('Profile')),
-  ];
+  ),
+  // Rest of your screens remain the same
+  const Center(child: Text('Events Calendar')),
+  const Center(child: Text('Saved Events')),
+  const Center(child: Text('Profile')),
+];
 
   void _onItemTapped(int index) {
     setState(() {
