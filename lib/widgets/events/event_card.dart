@@ -3,22 +3,15 @@ import 'package:flutter/material.dart';
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_typography.dart';
 import '../../config/utils/screen_size_helper.dart';
+import '../../models/event.dart'; // Add this import for the Event model
 
 class EventCard extends StatefulWidget {
-  final String title;
-  final String date;
-  final String month;
-  final double price;
-  final String imageUrl;
+  final Event event;  // Changed to use Event model
   final VoidCallback? onTap;
 
   const EventCard({
     Key? key,
-    this.title = "Event Name",
-    this.date = "12",
-    this.month = "JUNE",
-    this.price = 100,
-    this.imageUrl = "assets/images/cars.jpg",
+    required this.event,  // Made required since we need event data
     this.onTap,
   }) : super(key: key);
 
@@ -41,9 +34,8 @@ class _EventCardState extends State<EventCard> {
         child: GestureDetector(
           onTap: widget.onTap ?? () {},
           child: Container(
-            
-            width: sizeHelper.width(60), // Card width
-             height: 250, 
+            width: sizeHelper.width(60),
+            height: 250,
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
@@ -59,32 +51,26 @@ class _EventCardState extends State<EventCard> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Image and overlays container
                 Stack(
                   children: [
-                    // Event Image
-                   Padding(
-                     padding: const EdgeInsets.all(6.0),
-                     child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: Image.asset(
-                              widget.imageUrl,
-                              height: 140,
-                              width: 280,
-                              fit: BoxFit.cover,
-                              alignment: Alignment.topCenter,
-                            ),
-                          ),
-                   ),
-                         
-                    // Date overlay
+                    Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20),
+                        child: Image.asset(
+                          widget.event.imageUrl,  // Updated to use event model
+                          height: 140,
+                          width: 280,
+                          fit: BoxFit.cover,
+                          alignment: Alignment.topCenter,
+                        ),
+                      ),
+                    ),
                     Positioned(
                       top: 12,
                       left: 12,
                       child: _buildDateOverlay(),
                     ),
-            
-                    // Bookmark button
                     Positioned(
                       top: 12,
                       right: 12,
@@ -92,15 +78,13 @@ class _EventCardState extends State<EventCard> {
                     ),
                   ],
                 ),
-            
-                // Event details
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.title,
+                        widget.event.title,  // Updated to use event model
                         style: AppTypography.cardTitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -110,20 +94,20 @@ class _EventCardState extends State<EventCard> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '\$${widget.price.toStringAsFixed(2)}',
+                            '\$${widget.event.price.toStringAsFixed(2)}',  // Updated to use event model
                             style: AppTypography.cardPrice,
                           ),
-                          const Row(
+                          Row(
                             children: [
-                              Icon(
+                              const Icon(
                                 Icons.location_on,
                                 size: 18,
                                 color: AppColors.gray3,
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                '1.2 km',
-                                style: TextStyle(
+                                widget.event.distance,  // Updated to use event model
+                                style: const TextStyle(
                                   color: AppColors.gray3,
                                   fontSize: 12,
                                 ),
@@ -149,8 +133,8 @@ class _EventCardState extends State<EventCard> {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
         child: Container(
-          height:50,
-          width: 50,          
+          height: 50,
+          width: 50,
           decoration: BoxDecoration(
             color: AppColors.cardDateBackground.withOpacity(0.3),
             borderRadius: BorderRadius.circular(10),
@@ -158,19 +142,18 @@ class _EventCardState extends State<EventCard> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text(widget.date, style: AppTypography.cardDate),
-              
-              Text(widget.month, style: AppTypography.cardMonth),
+              Text(widget.event.date, style: AppTypography.cardDate),  // Updated to use event model
+              Text(widget.event.month, style: AppTypography.cardMonth),  // Updated to use event model
             ],
           ),
         ),
       ),
     );
   }
+
   Widget _buildBookmarkButton() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
-
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
         child: GestureDetector(
@@ -190,7 +173,6 @@ class _EventCardState extends State<EventCard> {
             curve: Curves.easeInOutCubic,
             height: isclicked ? 34 : 36,
             width: isclicked ? 34 : 36,
-
             alignment: Alignment.center,
             decoration: BoxDecoration(
               color: Colors.black.withOpacity(0.3),

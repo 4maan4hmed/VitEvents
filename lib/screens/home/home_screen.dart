@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/events/event_card.dart';
+import '../../models/event.dart';
+import '../../services/mock_event_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,47 +12,37 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  List<Event> eventsList = [];
+  bool isLoading = true;
+  String? error;
+  
+  final MockEventService _eventService = MockEventService();
 
-  // List of screens for each navigation item
-final List<Widget> _screens = [
-  // Explore Screen
-  SingleChildScrollView(  // Add this wrapper
-    child: Column(      // Add this to allow for more content
-      children: [
-        SizedBox(      // Replace Container with SizedBox
-          height: 280,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: const [
-              EventCard(),
-              EventCard(
-                title: "TechFest",
-                date: "10",
-                month: "July",
-                price: 240,
-                imageUrl: "assets/images/doodhinspecter.jpg",
-              ),
-              EventCard(
-                title: "bababoi",
-              ),
-            ],
-          ),
-        ),
-        // You can add more widgets below the horizontal list if needed
-      ],
-    ),
-  ),
-  // Rest of your screens remain the same
-  const Center(child: Text('Events Calendar')),
-  const Center(child: Text('Saved Events')),
-  const Center(child: Text('Profile')),
-];
+  @override
+  void initState() {
+    super.initState();
+    fetchEvents();
+  }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-      print('Navigation tapped: $index');
-    });
+  Future<void> fetchEvents() async {
+    try {
+      setState(() {
+        isLoading = true;
+        error = null;
+      });
+
+      final events = await _eventService.getEvents(limit: 5);
+      
+      setState(() {
+        eventsList = events;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+        isLoading = false;
+      });
+    }
   }
 
   @override
@@ -67,9 +59,33 @@ final List<Widget> _screens = [
           ),
         ],
       ),
-      body: _screens[_selectedIndex],
+      body: RefreshIndicator(
+        onRefresh: fetchEvents,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 280,
+                child: _buildEventsList(),
+              ),
+              if (!isLoading) ...[
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // TODO: Navigate to all events page
+                    },
+                    child: const Text('View All Events'),
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed, // Required for more than 3 items
+        type: BottomNavigationBarType.fixed,
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const [
@@ -93,29 +109,49 @@ final List<Widget> _screens = [
       ),
     );
   }
-}
 
-// You might want to extract this into a separate screen later
-class ExploreScreen extends StatelessWidget {
-  const ExploreScreen({super.key});
+  Widget _buildEventsList() {
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
+    if (error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Error: $error'),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: fetchEvents,
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (eventsList.isEmpty) {
+      return const Center(child: Text('No events available'));
+    }
+
+    return ListView.builder(
       scrollDirection: Axis.horizontal,
-      children: const [
-        EventCard(),
-        EventCard(
-          title: "TechFest",
-          date: "10",
-          month: "July",
-          price: 240,
-          imageUrl: "assets/doodhinspecter.jpg",
-        ),
-        EventCard(
-          title: "Baller",
-        ),
-      ],
+      itemCount: eventsList.length,
+      itemBuilder: (context, index) {
+        return EventCard(
+          event: eventsList[index],
+          onTap: () {
+            print('Event tapped: ${eventsList[index].title}');
+          },
+        );
+      },
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 }
