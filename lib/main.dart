@@ -1,11 +1,13 @@
-  import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-  import 'config/theme/app_theme.dart';
-  import 'screens/home/home_screen.dart';
+import 'config/theme/app_theme.dart';
+import 'screens/home/home_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
-  debugPrintHitTestResults = true; // This will help identify touch event issues
+
 }
 
   class MyApp extends StatelessWidget {

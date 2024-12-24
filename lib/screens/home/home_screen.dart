@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../widgets/events/event_card.dart';
 import '../../models/event.dart';
-import '../../services/mock_event_service.dart';
+import '../../services/firebase_event_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoading = true;
   String? error;
   
-  final MockEventService _eventService = MockEventService();
+  final FirebaseEventService _eventService = FirebaseEventService();
 
   @override
   void initState() {
@@ -33,15 +33,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
       final events = await _eventService.getEvents(limit: 5);
       
-      setState(() {
-        eventsList = events;
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          eventsList = events;
+          isLoading = false;
+        });
+      }
     } catch (e) {
-      setState(() {
-        error = e.toString();
-        isLoading = false;
-      });
+      if (mounted) {
+        setState(() {
+          error = e.toString();
+          isLoading = false;
+        });
+      }
     }
   }
 
@@ -69,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 height: 280,
                 child: _buildEventsList(),
               ),
-              if (!isLoading) ...[
+              if (!isLoading && error == null) ...[
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: ElevatedButton(
