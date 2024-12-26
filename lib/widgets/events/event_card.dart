@@ -57,12 +57,19 @@ class _EventCardState extends State<EventCard> {
                       padding: const EdgeInsets.all(6.0),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: Image.asset(
+                        child: Image.network(
                           widget.event.imageUrl,  // Updated to use event model
                           height: 140,
                           width: 280,
                           fit: BoxFit.cover,
                           alignment: Alignment.topCenter,
+                          loadingBuilder: (context, child, progress) {
+              if (progress == null) return child;
+              return const CircularProgressIndicator();
+            },
+            errorBuilder: (context, error, stackTrace) {
+              return const Text('Failed to load image');
+            },
                         ),
                       ),
                     ),
@@ -141,6 +148,7 @@ class _EventCardState extends State<EventCard> {
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          
             children: [
               Text(widget.event.date, style: AppTypography.cardDate),  // Updated to use event model
               Text(widget.event.month, style: AppTypography.cardMonth),  // Updated to use event model

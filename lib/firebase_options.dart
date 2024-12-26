@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyB6lFwgGzEPrIrQr3FdIVr_nGPHgoetoq4',
-    appId: '1:727997255439:android:84c6af710ad93bacd5387a',
+    appId: '1:727997255439:android:df29bb58adbf6946d5387a',
     messagingSenderId: '727997255439',
     projectId: 'vitevents-fdce6',
     storageBucket: 'vitevents-fdce6.firebasestorage.app',
