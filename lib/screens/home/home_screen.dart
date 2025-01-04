@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/events/event_card.dart';
 import '../../models/event.dart';
 import '../../services/firebase_event_service.dart';
+import '../home/event_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -143,12 +144,17 @@ class _HomeScreenState extends State<HomeScreen> {
       scrollDirection: Axis.horizontal,
       itemCount: eventsList.length,
       itemBuilder: (context, index) {
-        return EventCard(
-          event: eventsList[index],
-          onTap: () {
-            print('Event tapped: ${eventsList[index].title}');
-          },
-        );
+      return EventCard(
+  event: eventsList[index],
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EventScreen(title: eventsList[index].title),
+      ),
+    );
+  },
+);
       },
     );
   }
