@@ -6,14 +6,14 @@ import '../../config/utils/screen_size_helper.dart';
 import '../../models/event.dart'; // Add this import for the Event model
 
 class EventCard extends StatefulWidget {
-  final Event event;  // Changed to use Event model
+  final Event event; // Changed to use Event model
   final VoidCallback? onTap;
 
   const EventCard({
-    Key? key,
-    required this.event,  // Made required since we need event data
+    super.key,
+    required this.event, // Made required since we need event data
     this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   State<EventCard> createState() => _EventCardState();
@@ -41,10 +41,10 @@ class _EventCardState extends State<EventCard> {
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withOpacity(0.2),
                   spreadRadius: 0,
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
+                  blurRadius: 0,
+                  offset: const Offset(0, 5),
                 ),
               ],
             ),
@@ -58,18 +58,18 @@ class _EventCardState extends State<EventCard> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: Image.network(
-                          widget.event.imageUrl,  // Updated to use event model
+                          widget.event.imageUrl, // Updated to use event model
                           height: 140,
                           width: 280,
                           fit: BoxFit.cover,
                           alignment: Alignment.topCenter,
                           loadingBuilder: (context, child, progress) {
-              if (progress == null) return child;
-              return const CircularProgressIndicator();
-            },
-            errorBuilder: (context, error, stackTrace) {
-              return const Text('Failed to load image');
-            },
+                            if (progress == null) return child;
+                            return const CircularProgressIndicator();
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Text('Failed to load image');
+                          },
                         ),
                       ),
                     ),
@@ -91,7 +91,7 @@ class _EventCardState extends State<EventCard> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.event.title,  // Updated to use event model
+                        widget.event.title, // Updated to use event model
                         style: AppTypography.cardTitle,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -101,7 +101,7 @@ class _EventCardState extends State<EventCard> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            '\$${widget.event.price.toStringAsFixed(2)}',  // Updated to use event model
+                            '\$${widget.event.price.toStringAsFixed(2)}', // Updated to use event model
                             style: AppTypography.cardPrice,
                           ),
                           Row(
@@ -113,7 +113,8 @@ class _EventCardState extends State<EventCard> {
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                widget.event.distance,  // Updated to use event model
+                                widget.event
+                                    .distance, // Updated to use event model
                                 style: const TextStyle(
                                   color: AppColors.gray3,
                                   fontSize: 12,
@@ -148,10 +149,11 @@ class _EventCardState extends State<EventCard> {
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          
             children: [
-              Text(widget.event.date, style: AppTypography.cardDate),  // Updated to use event model
-              Text(widget.event.month, style: AppTypography.cardMonth),  // Updated to use event model
+              Text(widget.event.date,
+                  style: AppTypography.cardDate), // Updated to use event model
+              Text(widget.event.month,
+                  style: AppTypography.cardMonth), // Updated to use event model
             ],
           ),
         ),

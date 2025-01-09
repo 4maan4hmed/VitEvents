@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/config/theme/app_colors.dart';
+import 'package:flutter_application_2/config/theme/app_typography.dart';
 import '../../widgets/events/event_card.dart';
 import '../../models/event.dart';
 import '../../services/firebase_event_service.dart';
@@ -16,7 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<Event> eventsList = [];
   bool isLoading = true;
   String? error;
-  
+
   final FirebaseEventService _eventService = FirebaseEventService();
 
   @override
@@ -33,7 +35,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
 
       final events = await _eventService.getEvents(limit: 5);
-      
+
       if (mounted) {
         setState(() {
           eventsList = events;
@@ -53,16 +55,53 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Event Hub'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // TODO: Implement search functionality
-            },
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(120.0), // Extend AppBar height
+        child: AppBar(
+          title: const Text("VIT EVENTS", style: AppTypography.pageTitle),
+          flexibleSpace: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: SearchBar(
+                  hintText: '| Search for events ...',
+
+                  shadowColor:
+                      WidgetStateProperty.all(Colors.transparent), // No shadow
+                  backgroundColor: WidgetStateProperty.all(
+                    AppColors.gray1
+                        .withOpacity(0.2), // Transparent-like background
+                  ),
+                  leading: Icon(
+                    Icons.search,
+                    color: AppColors.gray1
+                        .withOpacity(0.6), // Semi-transparent search icon
+                  ),
+                  trailing: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.filter_list,
+                        color: AppColors.gray1
+                            .withOpacity(0.6), // Filter icon styling
+                      ),
+                      onPressed: () {
+                        // Action for the filter button
+                        print("Filter button pressed!");
+                      },
+                    ),
+                  ],
+                  onTap: () {
+                    // Ensure the search bar remains focused
+                    FocusScope.of(context).requestFocus(FocusNode());
+                  },
+                ), //TODO : Implement SearchBar widget, add the filter button that will use the bottom drop up for filter page and the seach bar should be transparent
+              ),
+              const SizedBox(
+                  height: 10), // Add some spacing below the search bar
+            ],
           ),
-        ],
+        ),
       ),
       body: RefreshIndicator(
         onRefresh: fetchEvents,
@@ -99,17 +138,9 @@ class _HomeScreenState extends State<HomeScreen> {
             label: "Explore",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: "Events"
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bookmark),
-            label: "Saved"
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: "Profile"
-          ),
+              icon: Icon(Icons.calendar_month), label: "Events"),
+          BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: "Saved"),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
       ),
     );
@@ -144,17 +175,18 @@ class _HomeScreenState extends State<HomeScreen> {
       scrollDirection: Axis.horizontal,
       itemCount: eventsList.length,
       itemBuilder: (context, index) {
-      return EventCard(
-  event: eventsList[index],
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => EventScreen(title: eventsList[index].title),
-      ),
-    );
-  },
-);
+        return EventCard(
+          event: eventsList[index],
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    EventScreen(title: eventsList[index].title),
+              ),
+            );
+          },
+        );
       },
     );
   }

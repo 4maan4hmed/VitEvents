@@ -4,14 +4,15 @@ class EventScreen extends StatelessWidget {
   final String title;
 
   const EventScreen({
-    Key? key, 
+    super.key,
     required this.title,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        //TODO: Use sliver app bar widget for making the image as app bar background
         title: Text(title),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
