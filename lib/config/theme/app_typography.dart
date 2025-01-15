@@ -14,9 +14,16 @@ class AppTypography {
     fontSize: 16.0,
   );
 
+  static const listTitle = TextStyle(
+    color: AppColors.blue1,
+    fontSize: 18.0,
+    fontWeight: FontWeight.w500,
+    fontFamily: 'Roboto',
+  );
+
   static const bodyMedium = TextStyle(
     color: AppColors.blue2,
-    fontSize: 14.0,
+    fontSize: 11.0,
   );
 
   static const cardTitle = TextStyle(
@@ -43,8 +50,13 @@ class AppTypography {
   );
 
   static const pageTitle = TextStyle(
-    color: AppColors.gray2,
-    fontSize: 24.0,
+    color: AppColors.white2,
+    fontSize: 28.0,
+    fontWeight: FontWeight.bold,
+  );
+  static const searchBar = TextStyle(
+    color: AppColors.blue1,
+    fontSize: 20.0,
     fontWeight: FontWeight.bold,
   );
 }

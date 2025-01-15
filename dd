@@ -1,0 +1,83 @@
+[33mcommit edc9fa1d54b7ea989b55ff2d44164e9d0b6ba5c0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mhomepage[m[33m, [m[1;31morigin/homepage[m[33m, [m[1;32mdynamic_widget_generation[m[33m)[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Thu Jan 9 13:29:20 2025 +0530
+
+    search bar better
+
+[33mcommit f82c07ce2e5f668bde2c39f5693212f15e0a9961[m[33m ([m[1;31morigin/dynamic_widget_generation[m[33m)[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Sun Jan 5 00:24:43 2025 +0530
+
+    basic event page initialised
+
+[33mcommit 8f8db5663334bb06c2d5b672c357c37feb1c929f[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Tue Dec 31 18:14:00 2024 +0530
+
+    keeping everything updated
+
+[33mcommit a883e20d35267e52eb4f9e5f7985f0eef13d8cf6[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Thu Dec 26 21:49:29 2024 +0530
+
+    Finally the images are working
+
+[33mcommit d26aa7bd6881c3e4c78284663c80db3da7f96af8[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Tue Dec 24 12:04:00 2024 +0530
+
+    Adding firebase to the project
+
+[33mcommit d745546addc606b429dbfc2ad8173d56b6b57c61[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Mon Dec 23 21:37:24 2024 +0530
+
+    some basic api integration
+
+[33mcommit 7a408f9b1ceb0554155c61efe11f5b34135feb49[m[33m ([m[1;31morigin/bugfixing[m[33m, [m[1;32mbugfixing[m[33m)[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Mon Dec 23 17:18:30 2024 +0530
+
+    Added bookmark animation and fixed sizing issues
+
+[33mcommit aceacb1730ebad036e066adab6b666c618493406[m[33m ([m[1;31morigin/file_management[m[33m, [m[1;32mfile_management[m[33m)[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Mon Dec 23 16:27:45 2024 +0530
+
+    Major bug fixes
+
+[33mcommit d3443263fc62cfa9410be073b02a6beef340e1e5[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Mon Dec 23 14:53:47 2024 +0530
+
+    works fine IG
+
+[33mcommit da4b8a73ebedbe23e209b4c4fed43857a1fe7e03[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Mon Dec 23 14:10:27 2024 +0530
+
+    File seperation done
+
+[33mcommit 4f5bc0b26164eb5f8ca2afeab59ff5935f4513ec[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Mon Dec 23 13:58:18 2024 +0530
+
+    file manamgement
+
+[33mcommit 343ca389c06f0fd5f52bac6b7a7b0b24d5a09a41[m[33m ([m[1;32mmaster[m[33m)[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Mon Dec 23 13:51:53 2024 +0530
+
+    Prev
+
+[33mcommit ef8c6dfab35ceb22410748df5ea9d3e5fc6a44d0[m[33m ([m[1;31morigin/theming[m[33m)[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Sun Dec 22 17:57:38 2024 +0530
+
+    theming done
+
+[33mcommit 0976047709c4edfe691ebdf58259b50573b78622[m
+Author: Amaan Ahmad <amaan.ahmad2022@vitstudent.ac.in>
+Date:   Sun Dec 22 16:02:29 2024 +0530
+
+    first commit with Card widget and list view done properly

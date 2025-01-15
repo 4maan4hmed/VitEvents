@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/config/theme/app_colors.dart';
 import 'package:flutter_application_2/config/theme/app_typography.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 import '../../widgets/events/event_card.dart';
 import '../../models/event.dart';
 import '../../services/firebase_event_service.dart';
@@ -55,95 +56,154 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(120.0), // Extend AppBar height
-        child: AppBar(
-          title: const Text("VIT EVENTS", style: AppTypography.pageTitle),
-          flexibleSpace: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: SearchBar(
-                  hintText: '| Search for events ...',
-
-                  shadowColor:
-                      WidgetStateProperty.all(Colors.transparent), // No shadow
-                  backgroundColor: WidgetStateProperty.all(
-                    AppColors.gray1
-                        .withOpacity(0.2), // Transparent-like background
-                  ),
-                  leading: Icon(
-                    Icons.search,
-                    color: AppColors.gray1
-                        .withOpacity(0.6), // Semi-transparent search icon
-                  ),
-                  trailing: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.filter_list,
-                        color: AppColors.gray1
-                            .withOpacity(0.6), // Filter icon styling
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(145.0), // Extend AppBar height
+          child: AppBar(
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(36),
+                    bottomRight: Radius.circular(36))),
+            title: const Text(
+              "VIT EVENTS",
+              style: AppTypography.pageTitle,
+            ),
+            flexibleSpace: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: SearchBar(
+                    hintText: '| Search for events ...',
+                    hintStyle: WidgetStateProperty.all(
+                      AppTypography.cardTitle.copyWith(
+                        color: AppColors.white.withOpacity(0.3),
                       ),
-                      onPressed: () {
-                        // Action for the filter button
-                        print("Filter button pressed!");
-                      },
                     ),
-                  ],
-                  onTap: () {
-                    // Ensure the search bar remains focused
-                    FocusScope.of(context).requestFocus(FocusNode());
-                  },
-                ), //TODO : Implement SearchBar widget, add the filter button that will use the bottom drop up for filter page and the seach bar should be transparent
-              ),
-              const SizedBox(
-                  height: 10), // Add some spacing below the search bar
-            ],
+                    shadowColor: WidgetStateProperty.all(
+                        Colors.transparent), // No shadow
+                    backgroundColor: WidgetStateProperty.all(
+                      AppColors.gray1
+                          .withOpacity(0), // Transparent-like background
+                    ),
+                    leading: Icon(
+                      Icons.search_rounded,
+                      color: AppColors.white
+                          .withOpacity(1), // Semi-transparent search icon
+                    ),
+                    trailing: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.filter_list,
+                          color: AppColors.white
+                              .withOpacity(1), // Filter icon styling
+                        ),
+                        onPressed: () {
+                          //TODO: Action for the filter button
+                        },
+                      ),
+                    ],
+                    onTap: () {
+                      // Ensure the search bar remains focused
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    },
+                  ), //TODO : Implement SearchBar widget, add the filter button that will use the bottom drop up for filter page and the seach bar should be transparent
+                ),
+                const SizedBox(
+                    height: 30), // Add some spacing below the search bar
+              ],
+            ),
           ),
         ),
-      ),
-      body: RefreshIndicator(
-        onRefresh: fetchEvents,
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 280,
-                child: _buildEventsList(),
-              ),
-              if (!isLoading && error == null) ...[
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // TODO: Navigate to all events page
-                    },
-                    child: const Text('View All Events'),
+        body: RefreshIndicator(
+          onRefresh: fetchEvents,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 40,
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(left: 18, right: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        "Upcoming Events",
+                        style: AppTypography.listTitle,
+                      ),
+                      Spacer(),
+                      Text(
+                        "See All",
+                        style: AppTypography.listTitle,
+                      ),
+                      Icon(Icons.arrow_forward_ios, size: 14),
+                    ],
                   ),
                 ),
+                const SizedBox(),
+                SizedBox(
+                  height: 280,
+                  child: _buildEventsList(),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(left: 18, right: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Text(
+                        "Nearby You",
+                        style: AppTypography.listTitle,
+                      ),
+                      Spacer(),
+                      Text(
+                        "See All",
+                        style: AppTypography.listTitle,
+                      ),
+                      Icon(Icons.arrow_forward_ios, size: 14),
+                    ],
+                  ),
+                ),
+                const SizedBox(),
+                SizedBox(
+                  height: 280,
+                  child: _buildEventsList(),
+                ),
               ],
-            ],
+            ),
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.explore),
-            label: "Explore",
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          child: GNav(
+            color: AppColors.primary,
+            tabBorderRadius: 40,
+            tabActiveBorder: Border.all(color: AppColors.blueDark, width: 1.5),
+            gap: 8,
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            tabs: const [
+              GButton(
+                icon: Icons.explore,
+                text: 'Explore',
+              ),
+              GButton(
+                icon: Icons.calendar_month,
+                text: 'Events',
+              ),
+              GButton(
+                icon: Icons.bookmark,
+                text: 'Saved',
+              ),
+              GButton(
+                icon: Icons.person,
+                text: 'Profile',
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_month), label: "Events"),
-          BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: "Saved"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
-        ],
-      ),
-    );
+        ));
   }
 
   Widget _buildEventsList() {
