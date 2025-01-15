@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/config/theme/app_colors.dart';
 import 'package:flutter_application_2/config/theme/app_typography.dart';
+import 'package:flutter_application_2/screens/home/all_event_screen.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:uuid/uuid.dart';
 import '../../widgets/events/event_card.dart';
 import '../../models/event.dart';
 import '../../services/firebase_event_service.dart';
@@ -15,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
+  final int _selectedIndex = 0;
   List<Event> eventsList = [];
   bool isLoading = true;
   String? error;
@@ -123,21 +125,31 @@ class _HomeScreenState extends State<HomeScreen> {
                 const SizedBox(
                   height: 40,
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 18, right: 8),
+                Padding(
+                  padding: const EdgeInsets.only(left: 18, right: 8),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text(
+                      const Text(
                         "Upcoming Events",
                         style: AppTypography.listTitle,
                       ),
-                      Spacer(),
-                      Text(
-                        "See All",
-                        style: AppTypography.listTitle,
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const AllEventScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          "See All",
+                          style: AppTypography.listTitle,
+                        ),
                       ),
-                      Icon(Icons.arrow_forward_ios, size: 14),
+                      const Icon(Icons.arrow_forward_ios, size: 14),
                     ],
                   ),
                 ),
@@ -179,7 +191,6 @@ class _HomeScreenState extends State<HomeScreen> {
         bottomNavigationBar: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           child: GNav(
-            color: AppColors.primary,
             tabBorderRadius: 40,
             tabActiveBorder: Border.all(color: AppColors.blueDark, width: 1.5),
             gap: 8,
@@ -235,25 +246,23 @@ class _HomeScreenState extends State<HomeScreen> {
       scrollDirection: Axis.horizontal,
       itemCount: eventsList.length,
       itemBuilder: (context, index) {
+        String id = const Uuid().v4();
         return EventCard(
+          identity: id,
           event: eventsList[index],
           onTap: () {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) =>
-                    EventScreen(title: eventsList[index].title),
+                builder: (context) => EventScreen(
+                  event: eventsList[index],
+                  identity: id,
+                ), //Information from event card is passed to event screen
               ),
             );
           },
         );
       },
     );
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
   }
 }
