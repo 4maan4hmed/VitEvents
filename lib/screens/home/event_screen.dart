@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/widgets/events/event_card.dart';
+
 import '../../models/event.dart'; // Import the Event model
 
 class EventScreen extends StatelessWidget {
@@ -42,7 +42,7 @@ class EventScreen extends StatelessWidget {
                   tag: identity,
                   child: Image.network(
                     event.imageUrl,
-                    height: 200,
+                    height: 500,
                     width: double.infinity,
                     fit: BoxFit.cover,
                     alignment: Alignment.topCenter,

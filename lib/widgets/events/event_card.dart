@@ -1,9 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
+
 import '../../config/theme/app_colors.dart';
 import '../../config/theme/app_typography.dart';
-import '../../config/utils/screen_size_helper.dart';
 import '../../models/event.dart';
 
 class EventCard extends StatefulWidget {
@@ -29,113 +28,108 @@ class _EventCardState extends State<EventCard> {
 
   @override
   Widget build(BuildContext context) {
-    final sizeHelper = ScreenSizeHelper(context);
-
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SizedBox(
-        height: 250,
-        child: GestureDetector(
-          onTap: widget.onTap ?? () {},
-          child: Container(
-            width: sizeHelper.width(60),
-            height: 250,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  spreadRadius: 0,
-                  blurRadius: 0,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Stack(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20),
-                        child: Hero(
-                          tag: widget
-                              .identity, // Use the card's unique ID for hero tag
-                          child: Image.network(
-                            widget.event.imageUrl,
-                            height: 140,
-                            width: 280,
-                            fit: BoxFit.cover,
-                            alignment: Alignment.topCenter,
-                            loadingBuilder: (context, child, progress) {
-                              if (progress == null) return child;
-                              return const CircularProgressIndicator();
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              return const Text('Failed to load image');
-                            },
-                          ),
+      padding: const EdgeInsets.all(7.0),
+      child: GestureDetector(
+        onTap: widget.onTap ?? () {},
+        child: Container(
+          width: 230,
+          height: 280,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                spreadRadius: 0,
+                blurRadius: 0,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Hero(
+                        tag: widget
+                            .identity, // Use the card's unique ID for hero tag
+                        child: Image.network(
+                          widget.event.imageUrl,
+                          height: 145,
+                          width: 280,
+                          fit: BoxFit.cover,
+                          alignment: Alignment.topCenter,
+                          loadingBuilder: (context, child, progress) {
+                            if (progress == null) return child;
+                            return const CircularProgressIndicator();
+                          },
+                          errorBuilder: (context, error, stackTrace) {
+                            return const Text('Failed to load image');
+                          },
                         ),
                       ),
                     ),
-                    Positioned(
-                      top: 12,
-                      left: 12,
-                      child: _buildDateOverlay(),
+                  ),
+                  Positioned(
+                    top: 12,
+                    left: 12,
+                    child: _buildDateOverlay(),
+                  ),
+                  Positioned(
+                    top: 12,
+                    right: 12,
+                    child: _buildBookmarkButton(),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.event.title,
+                      style: AppTypography.cardTitle,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    Positioned(
-                      top: 12,
-                      right: 12,
-                      child: _buildBookmarkButton(),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '\$${widget.event.price.toStringAsFixed(2)}',
+                          style: AppTypography.cardPrice,
+                        ),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on,
+                              size: 18,
+                              color: AppColors.gray3,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              widget.event.distance,
+                              style: const TextStyle(
+                                color: AppColors.gray3,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        widget.event.title,
-                        style: AppTypography.cardTitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '\$${widget.event.price.toStringAsFixed(2)}',
-                            style: AppTypography.cardPrice,
-                          ),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.location_on,
-                                size: 18,
-                                color: AppColors.gray3,
-                              ),
-                              const SizedBox(width: 4),
-                              Text(
-                                widget.event.distance,
-                                style: const TextStyle(
-                                  color: AppColors.gray3,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),

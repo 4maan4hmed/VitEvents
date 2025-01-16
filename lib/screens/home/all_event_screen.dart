@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../models/event.dart'; // Import the Event model
 
 class AllEventScreen extends StatelessWidget {
   const AllEventScreen({super.key});

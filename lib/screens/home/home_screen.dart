@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_application_2/config/theme/app_colors.dart';
 import 'package:flutter_application_2/config/theme/app_typography.dart';
 import 'package:flutter_application_2/screens/home/all_event_screen.dart';
+import 'package:flutter_application_2/widgets/filter_bottom_sheet.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:uuid/uuid.dart';
 import '../../widgets/events/event_card.dart';
@@ -17,10 +18,10 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final int _selectedIndex = 0;
   List<Event> eventsList = [];
   bool isLoading = true;
   String? error;
+  final TextEditingController searchController = TextEditingController();
 
   final FirebaseEventService _eventService = FirebaseEventService();
 
@@ -73,43 +74,66 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: SearchBar(
-                    hintText: '| Search for events ...',
-                    hintStyle: WidgetStateProperty.all(
-                      AppTypography.cardTitle.copyWith(
-                        color: AppColors.white.withOpacity(0.3),
-                      ),
-                    ),
-                    shadowColor: WidgetStateProperty.all(
-                        Colors.transparent), // No shadow
-                    backgroundColor: WidgetStateProperty.all(
-                      AppColors.gray1
-                          .withOpacity(0), // Transparent-like background
-                    ),
-                    leading: Icon(
-                      Icons.search_rounded,
-                      color: AppColors.white
-                          .withOpacity(1), // Semi-transparent search icon
-                    ),
-                    trailing: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.filter_list,
-                          color: AppColors.white
-                              .withOpacity(1), // Filter icon styling
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: SearchBar(
+                      controller:
+                          searchController, // Add a TextEditingController
+                      onTapOutside: (event) {
+                        FocusScope.of(context).unfocus();
+                        setState(() {
+                          searchController.clear();
+                          // Reset any other state variables if needed
+                        });
+                      },
+                      hintText: 'Search for events ...',
+                      hintStyle: WidgetStateProperty.all(
+                        AppTypography.cardTitle.copyWith(
+                          color: AppColors.white.withOpacity(0.3),
                         ),
-                        onPressed: () {
-                          //TODO: Action for the filter button
-                        },
                       ),
-                    ],
-                    onTap: () {
-                      // Ensure the search bar remains focused
-                      FocusScope.of(context).requestFocus(FocusNode());
-                    },
-                  ), //TODO : Implement SearchBar widget, add the filter button that will use the bottom drop up for filter page and the seach bar should be transparent
-                ),
+                      overlayColor: WidgetStateProperty.all(Colors.transparent),
+                      shadowColor: WidgetStateProperty.all(Colors.transparent),
+                      backgroundColor: WidgetStateProperty.all(
+                        AppColors.gray1.withOpacity(0.1),
+                      ),
+                      padding: const WidgetStatePropertyAll<EdgeInsets>(
+                        EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      leading: const Icon(
+                        Icons.search_rounded,
+                        color: AppColors.white,
+                        size: 24,
+                      ),
+                      trailing: [
+                        IconButton(
+                          icon: const Icon(
+                            Icons.filter_list,
+                            color: AppColors.white,
+                          ),
+                          splashRadius: 24,
+                          tooltip: 'Filter events',
+                          onPressed: () {
+                            // TODO: Implement filter functionality
+                            showModalBottomSheet(
+                              context: context,
+                              builder: (context) => const FilterBottomSheet(),
+                            );
+                          },
+                        ),
+                      ],
+                      onSubmitted: (value) {
+                        // Implement search functionality
+                        if (value.isNotEmpty) {
+                          // Perform search
+                        }
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          // Update search results in real-time if needed
+                        });
+                      },
+                    ) //TODO : Implement SearchBar widget, add the filter button that will use the bottom drop up for filter page and the seach bar should be transparent
+                    ),
                 const SizedBox(
                     height: 30), // Add some spacing below the search bar
               ],
