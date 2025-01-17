@@ -16,6 +16,8 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
+  // ignore: unused_field
+  int _prevIndex = 0;
 
   // List of screens to display
   final List<Widget> _screens = [
@@ -39,6 +41,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           onTabChange: (index) {
             setState(() {
+              _prevIndex = _selectedIndex;
               _selectedIndex = index;
             });
           },

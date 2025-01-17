@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/config/theme/app_colors.dart';
 import 'package:flutter_application_2/config/theme/app_typography.dart';
@@ -241,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (eventsList.isEmpty) {
       return const Center(child: Text('No events available'));
     }
-
+    eventsList.shuffle(Random()); // Shuffle the list of events
     return ListView.builder(
       scrollDirection: Axis.horizontal,
       itemCount: eventsList.length,

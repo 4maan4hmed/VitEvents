@@ -4,8 +4,7 @@ import '../../models/event.dart'; // Import the Event model
 
 class EventScreen extends StatelessWidget {
   final Event event;
-  final String identity; // Change to use Event model instead of just title
-
+  final String identity; // Change to use Event model instead of just 
   const EventScreen({
     super.key,
     required this.event,

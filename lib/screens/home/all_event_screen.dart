@@ -8,10 +8,6 @@ class AllEventScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("All events"),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
       ),
       body: const Text("All event screen cards will be here"),
     );
