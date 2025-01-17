@@ -3,7 +3,6 @@ import 'package:flutter_application_2/config/theme/app_colors.dart';
 import 'package:flutter_application_2/config/theme/app_typography.dart';
 import 'package:flutter_application_2/screens/home/all_event_screen.dart';
 import 'package:flutter_application_2/widgets/filter_bottom_sheet.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:uuid/uuid.dart';
 import '../../widgets/events/event_card.dart';
 import '../../models/event.dart';
@@ -59,186 +58,163 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(145.0), // Extend AppBar height
-          child: AppBar(
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(36),
-                    bottomRight: Radius.circular(36))),
-            title: const Text(
-              "VIT EVENTS",
-              style: AppTypography.pageTitle,
-            ),
-            flexibleSpace: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: SearchBar(
-                      controller:
-                          searchController, // Add a TextEditingController
-                      onTapOutside: (event) {
-                        FocusScope.of(context).unfocus();
-                        setState(() {
-                          searchController.clear();
-                          // Reset any other state variables if needed
-                        });
-                      },
-                      hintText: 'Search for events ...',
-                      hintStyle: WidgetStateProperty.all(
-                        AppTypography.cardTitle.copyWith(
-                          color: AppColors.white.withOpacity(0.3),
-                        ),
-                      ),
-                      overlayColor: WidgetStateProperty.all(Colors.transparent),
-                      shadowColor: WidgetStateProperty.all(Colors.transparent),
-                      backgroundColor: WidgetStateProperty.all(
-                        AppColors.gray1.withOpacity(0.1),
-                      ),
-                      padding: const WidgetStatePropertyAll<EdgeInsets>(
-                        EdgeInsets.symmetric(horizontal: 16),
-                      ),
-                      leading: const Icon(
-                        Icons.search_rounded,
-                        color: AppColors.white,
-                        size: 24,
-                      ),
-                      trailing: [
-                        IconButton(
-                          icon: const Icon(
-                            Icons.filter_list,
-                            color: AppColors.white,
-                          ),
-                          splashRadius: 24,
-                          tooltip: 'Filter events',
-                          onPressed: () {
-                            // TODO: Implement filter functionality
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (context) => const FilterBottomSheet(),
-                            );
-                          },
-                        ),
-                      ],
-                      onSubmitted: (value) {
-                        // Implement search functionality
-                        if (value.isNotEmpty) {
-                          // Perform search
-                        }
-                      },
-                      onChanged: (value) {
-                        setState(() {
-                          // Update search results in real-time if needed
-                        });
-                      },
-                    ) //TODO : Implement SearchBar widget, add the filter button that will use the bottom drop up for filter page and the seach bar should be transparent
-                    ),
-                const SizedBox(
-                    height: 30), // Add some spacing below the search bar
-              ],
-            ),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(145.0), // Extend AppBar height
+        child: AppBar(
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(36),
+                  bottomRight: Radius.circular(36))),
+          title: const Text(
+            "VIT EVENTS",
+            style: AppTypography.pageTitle,
           ),
-        ),
-        body: RefreshIndicator(
-          onRefresh: fetchEvents,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 40,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 18, right: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      const Text(
-                        "Upcoming Events",
-                        style: AppTypography.listTitle,
+          flexibleSpace: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: SearchBar(
+                    controller: searchController, // Add a TextEditingController
+                    onTapOutside: (event) {
+                      FocusScope.of(context).unfocus();
+                      setState(() {
+                        searchController.clear();
+                        // Reset any other state variables if needed
+                      });
+                    },
+                    hintText: 'Search for events ...',
+                    hintStyle: WidgetStateProperty.all(
+                      AppTypography.cardTitle.copyWith(
+                        color: AppColors.white.withOpacity(0.3),
                       ),
-                      const Spacer(),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const AllEventScreen(),
-                            ),
+                    ),
+                    textStyle: WidgetStateProperty.all(
+                      AppTypography.cardTitle.copyWith(
+                          color: AppColors.white, fontWeight: FontWeight.w400),
+                    ),
+                    overlayColor: WidgetStateProperty.all(Colors.transparent),
+                    shadowColor: WidgetStateProperty.all(Colors.transparent),
+                    backgroundColor: WidgetStateProperty.all(
+                      AppColors.gray1.withOpacity(0.1),
+                    ),
+                    padding: const WidgetStatePropertyAll<EdgeInsets>(
+                      EdgeInsets.symmetric(horizontal: 16),
+                    ),
+                    leading: const Icon(
+                      Icons.search_rounded,
+                      color: AppColors.white,
+                      size: 24,
+                    ),
+                    trailing: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.filter_list,
+                          color: AppColors.white,
+                        ),
+                        splashRadius: 24,
+                        tooltip: 'Filter events',
+                        onPressed: () {
+                          // TODO: Implement filter functionality
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) => const FilterBottomSheet(),
                           );
                         },
-                        child: const Text(
-                          "See All",
-                          style: AppTypography.listTitle,
-                        ),
                       ),
-                      const Icon(Icons.arrow_forward_ios, size: 14),
                     ],
+                    onSubmitted: (value) {
+                      // Implement search functionality
+                      if (value.isNotEmpty) {
+                        // Perform search
+                      }
+                    },
+                    onChanged: (value) {
+                      setState(() {
+                        // Update search results in real-time if needed
+                      });
+                    },
+                  ) //TODO : Implement SearchBar widget, add the filter button that will use the bottom drop up for filter page and the seach bar should be transparent
                   ),
-                ),
-                const SizedBox(),
-                SizedBox(
-                  height: 280,
-                  child: _buildEventsList(),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 18, right: 8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Text(
-                        "Nearby You",
-                        style: AppTypography.listTitle,
-                      ),
-                      Spacer(),
-                      Text(
+              const SizedBox(
+                  height: 30), // Add some spacing below the search bar
+            ],
+          ),
+        ),
+      ),
+      body: RefreshIndicator(
+        onRefresh: fetchEvents,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 40,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 18, right: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    const Text(
+                      "Upcoming Events",
+                      style: AppTypography.listTitle,
+                    ),
+                    const Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const AllEventScreen(),
+                          ),
+                        );
+                      },
+                      child: const Text(
                         "See All",
                         style: AppTypography.listTitle,
                       ),
-                      Icon(Icons.arrow_forward_ios, size: 14),
-                    ],
-                  ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios, size: 14),
+                  ],
                 ),
-                const SizedBox(),
-                SizedBox(
-                  height: 280,
-                  child: _buildEventsList(),
+              ),
+              const SizedBox(),
+              SizedBox(
+                height: 280,
+                child: _buildEventsList(),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Padding(
+                padding: EdgeInsets.only(left: 18, right: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Text(
+                      "Nearby You",
+                      style: AppTypography.listTitle,
+                    ),
+                    Spacer(),
+                    Text(
+                      "See All",
+                      style: AppTypography.listTitle,
+                    ),
+                    Icon(Icons.arrow_forward_ios, size: 14),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ),
-        bottomNavigationBar: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          child: GNav(
-            tabBorderRadius: 40,
-            tabActiveBorder: Border.all(color: AppColors.blueDark, width: 1.5),
-            gap: 8,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            tabs: const [
-              GButton(
-                icon: Icons.explore,
-                text: 'Explore',
               ),
-              GButton(
-                icon: Icons.calendar_month,
-                text: 'Events',
-              ),
-              GButton(
-                icon: Icons.bookmark,
-                text: 'Saved',
-              ),
-              GButton(
-                icon: Icons.person,
-                text: 'Profile',
+              const SizedBox(),
+              SizedBox(
+                height: 280,
+                child: _buildEventsList(),
               ),
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   Widget _buildEventsList() {

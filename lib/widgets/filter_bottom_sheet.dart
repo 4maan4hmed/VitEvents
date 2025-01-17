@@ -48,7 +48,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
             const Text('Price Range',
                 style: TextStyle(fontSize: 16, color: AppColors.primary)),
             RangeSlider(
@@ -66,24 +65,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 });
               },
             ),
-            const SizedBox(height: 16),
             const Text(
               'Distance',
               style: AppTypography.cardDate,
             ),
-            Slider(
-              value: _distance,
-              min: 0,
-              max: 100,
-              divisions: 10,
-              label: '${_distance.round()} km',
-              onChanged: (double value) {
-                setState(() {
-                  _distance = value;
-                });
-              },
-            ),
-            const SizedBox(height: 16),
             const Text(
               'Categories',
               style: AppTypography.cardDate,
