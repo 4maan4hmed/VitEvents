@@ -4,6 +4,9 @@ import 'package:flutter_application_2/screens/home/all_event_screen.dart';
 import 'package:flutter_application_2/screens/home/home_screen.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
+import 'profile.dart';
+import 'saved.dart';
+
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
 
@@ -18,8 +21,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const AllEventScreen(),
-    const SavedScreen(), // You'll need to create this
-    const ProfileScreen(), // You'll need to create this
+    const SavedScreen(),
+    const ProfileScreen(),
   ];
 
   @override
@@ -58,33 +61,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-// Create these screens
-class SavedScreen extends StatelessWidget {
-  const SavedScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Saved Screen'),
-      ),
-    );
-  }
-}
-
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text('Profile Screen'),
       ),
     );
   }
