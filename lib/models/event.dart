@@ -38,14 +38,35 @@ class Event {
         distance: data['location'] ?? 'N/A',
         bio: data['bio'] ??
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        isSaved: data['isSaved'] ?? false,
+        isSaved: data['is_saved'] ?? false,
         datetimeStart: data['start_time'] ?? Timestamp(123, 123));
+  }
+
+  
+  Future<List<Event>> getEvents({
+    int? limit,
+    Map<String, dynamic>? whereClause,
+  }) async {
+    Query query = FirebaseFirestore.instance.collection('events');
+
+    if (whereClause != null) {
+      whereClause.forEach((key, value) {
+        query = query.where(key, isEqualTo: value);
+      });
+    }
+
+    if (limit != null) {
+      query = query.limit(limit);
+    }
+
+    final snapshot = await query.get();
+    return snapshot.docs.map((doc) => Event.fromFirestore(doc)).toList();
   }
 
   // Convert Event to Firestore document
   Map<String, dynamic> toFirestore() {
     return {
-      'isSaved': isSaved,
+      'is_saved': isSaved,
     };
   }
 
@@ -58,7 +79,7 @@ class Event {
       await FirebaseFirestore.instance
           .collection('events') // Replace with your collection name
           .doc(id)
-          .update({'isSaved': newStatus});
+          .update({'is_saved': newStatus});
     } catch (e) {
       throw Exception('Failed to update saved status: $e');
     }

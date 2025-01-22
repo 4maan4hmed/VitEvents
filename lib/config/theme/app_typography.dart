@@ -50,7 +50,7 @@ class AppTypography {
   );
 
   static const pageTitle = TextStyle(
-    color: AppColors.white2,
+    color: AppColors.gray,
     fontSize: 28.0,
     fontWeight: FontWeight.bold,
   );
@@ -59,4 +59,6 @@ class AppTypography {
     fontSize: 20.0,
     fontWeight: FontWeight.bold,
   );
+
+  static var cardSubtitle;
 }

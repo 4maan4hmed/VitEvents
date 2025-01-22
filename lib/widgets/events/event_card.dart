@@ -9,7 +9,6 @@ import '../../models/event.dart';
 class EventCard extends StatefulWidget {
   final Event event;
   final VoidCallback? onTap;
-  // Add a unique ID for each card instance
   final String identity;
 
   const EventCard({
@@ -42,7 +41,8 @@ class _EventCardState extends State<EventCard> {
     // Extract components
     day = DateFormat.d().format(startDate); // e.g., "15"
     month = DateFormat.MMMM().format(startDate); // e.g., "December"
-    if (month.length > 5) {
+    month = month.toUpperCase(); // e.g., "December"
+    if (month.length > 3) {
       month = month.substring(0, 3);
     }
     year = DateFormat.y().format(startDate); // e.g., "2024"
@@ -135,13 +135,13 @@ class _EventCardState extends State<EventCard> {
                             const Icon(
                               Icons.location_on,
                               size: 18,
-                              color: AppColors.gray3,
+                              color: AppColors.gray,
                             ),
                             const SizedBox(width: 4),
                             Text(
                               widget.event.distance,
                               style: const TextStyle(
-                                color: AppColors.gray3,
+                                color: AppColors.gray,
                                 fontSize: 12,
                               ),
                             ),
@@ -162,7 +162,6 @@ class _EventCardState extends State<EventCard> {
       ),
     );
   }
-  
 
   // Rest of the methods remain the same
   Widget _buildDateOverlay() {
@@ -188,55 +187,56 @@ class _EventCardState extends State<EventCard> {
       ),
     );
   }
-Widget _buildBookmarkButton() {
-  return ClipRRect(
-    borderRadius: BorderRadius.circular(10),
-    child: BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-      child: GestureDetector(
-        onTap: () async {
-          setState(() {
-            isSaved = !isSaved;
-            isclicked = !isclicked;
-          });
-          
-          try {
-            await widget.event.updateSavedStatus(isSaved);
-          } catch (e) {
-            // Revert if failed
+
+  Widget _buildBookmarkButton() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+        child: GestureDetector(
+          onTap: () async {
             setState(() {
               isSaved = !isSaved;
-            });
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Failed to update bookmark')),
-            );
-          }
-
-          Future.delayed(const Duration(milliseconds: 50), () {
-            setState(() {
               isclicked = !isclicked;
             });
-          });
-        },
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 50),
-          curve: Curves.easeInOutCubic,
-          height: isclicked ? 34 : 36,
-          width: isclicked ? 34 : 36,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.3),
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Icon(
-            isSaved ? Icons.bookmark : Icons.bookmark_border,
-            color: Colors.white,
-            size: 20,
+
+            try {
+              await widget.event.updateSavedStatus(isSaved);
+            } catch (e) {
+              // Revert if failed
+              setState(() {
+                isSaved = !isSaved;
+              });
+              // ignore: use_build_context_synchronously
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Failed to update bookmark')),
+              );
+            }
+
+            Future.delayed(const Duration(milliseconds: 50), () {
+              setState(() {
+                isclicked = !isclicked;
+              });
+            });
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 50),
+            curve: Curves.easeInOutCubic,
+            height: isclicked ? 34 : 36,
+            width: isclicked ? 34 : 36,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(
+              isSaved ? Icons.bookmark : Icons.bookmark_border,
+              color: Colors.white,
+              size: 20,
+            ),
           ),
         ),
       ),
-    ),
-  );
+    );
   }
-
 }

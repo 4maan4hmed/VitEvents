@@ -6,7 +6,7 @@ class FirebaseEventService {
       FirebaseFirestore.instance.collection('events');
 
   // Get random events with limit
-  Future<List<Event>> getEvents({int limit = 5}) async {
+  Future<List<Event>> getEvents({int limit = 5, required Map<String, bool> whereClause}) async {
     try {
       // Get all documents and shuffle them in memory
       final querySnapshot = await _eventsCollection.get();

@@ -22,7 +22,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   // List of screens to display
   final List<Widget> _screens = [
     const HomeScreen(),
-    const AllEventScreen(),
+    const AllEventsScreen(),
     const SavedScreen(),
     const ProfileScreen(),
   ];
