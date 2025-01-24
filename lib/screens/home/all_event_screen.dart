@@ -1,13 +1,18 @@
-import 'package:flutter_application_2/widgets/animated_search_bar.dart';
+// all_events_screen.dart
+
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uuid/uuid.dart';
+
+// Import your local widgets and services
+import 'package:flutter_application_2/widgets/animated_search_bar.dart';
 import 'package:flutter_application_2/config/theme/app_colors.dart';
 import 'package:flutter_application_2/config/theme/app_typography.dart';
 import 'package:flutter_application_2/widgets/filter_bottom_sheet.dart';
 import 'package:flutter_application_2/services/firebase_event_service.dart';
 import 'package:flutter_application_2/models/event.dart';
 import 'package:flutter_application_2/screens/home/event_screen.dart';
-import 'package:uuid/uuid.dart';
-import 'package:flutter_application_2/widgets/events/event_card_small.dart'; // Import your EventCardSmall
+import 'package:flutter_application_2/widgets/events/event_card_small.dart';
 
 class AllEventsScreen extends StatefulWidget {
   const AllEventsScreen({super.key});
@@ -18,21 +23,53 @@ class AllEventsScreen extends StatefulWidget {
 
 class _AllEventsScreenState extends State<AllEventsScreen> {
   List<Event> eventsList = [];
-  bool isLoading = true;
+  bool isLoading = false;
   String? error;
   final TextEditingController searchController = TextEditingController();
   final FirebaseEventService _eventService = FirebaseEventService();
   bool hasMore = true;
   static const int _pageSize = 10;
+  DocumentSnapshot? lastDocument;
+
+  // Filter and search state
+  Map<String, dynamic> currentFilters = {};
+  String searchQuery = '';
+  bool isSearching = false;
 
   @override
   void initState() {
     super.initState();
-    fetchEvents();
+    _initialFetch();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _initialFetch() async {
+    await fetchEvents();
+  }
+
+  Future<void> refresh() async {
+    if (!mounted) return;
+
+    setState(() {
+      eventsList.clear();
+      lastDocument = null;
+      hasMore = true;
+      error = null;
+    });
+    await _initialFetch();
   }
 
   Future<void> fetchEvents() async {
-    if (!hasMore) return;
+    if (!hasMore) {
+      return;
+    }
+
+    if (!mounted) return;
 
     try {
       setState(() {
@@ -40,26 +77,208 @@ class _AllEventsScreenState extends State<AllEventsScreen> {
         error = null;
       });
 
-      final events = await _eventService.getEvents(
+      // Combine search query and filters
+      Map<String, dynamic> whereClause = {...currentFilters};
+      whereClause.forEach((key, value) {
+        print(' Key : $key :: Value : $value');
+      });
+      // Add search query to where clause if not empty
+      if (searchQuery.isNotEmpty) {
+        whereClause['name_lowercase'] = {
+          'operator': '>=',
+          'value': searchQuery.toLowerCase(),
+        };
+      }
+
+
+      final QuerySnapshot eventsSnapshot =
+          await _eventService.getEventsSnapshot(
         limit: _pageSize,
-        whereClause: {},
+        whereClause: whereClause,
+        lastDocument: lastDocument,
       );
 
-      if (mounted) {
-        setState(() {
-          eventsList.addAll(events);
-          hasMore = events.length == _pageSize;
-          isLoading = false;
-        });
-      }
+      print('whereClause : $whereClause');
+      print('lastDocument : $lastDocument');
+      print('searchQuery : $searchQuery');
+      print('searchController : ${searchController.text}');
+
+      if (!mounted) return;
+
+      final List<Event> newEvents = eventsSnapshot.docs
+          .map((doc) => Event.fromFirestore(
+              doc as DocumentSnapshot<Map<String, dynamic>>))
+          .toList();
+
+      setState(() {
+        if (lastDocument == null) {
+          eventsList = newEvents;
+        } else {
+          eventsList.addAll(newEvents);
+        }
+
+        hasMore = newEvents.length == _pageSize;
+        lastDocument =
+            eventsSnapshot.docs.isNotEmpty ? eventsSnapshot.docs.last : null;
+        isLoading = false;
+      });
     } catch (e) {
-      if (mounted) {
-        setState(() {
-          error = e.toString();
-          isLoading = false;
-        });
-      }
+      if (!mounted) return;
+
+      setState(() {
+        error = e.toString();
+        isLoading = false;
+      });
     }
+  }
+
+  void updateFilters(Map<String, dynamic> newFilters) {
+    if (!mounted) return;
+
+    setState(() {
+      currentFilters = newFilters;
+      eventsList.clear();
+      lastDocument = null;
+      hasMore = true;
+      error = null;
+    });
+    _initialFetch();
+  }
+
+  void handleSearch(String query) {
+    if (!mounted) return;
+
+    setState(() {
+      searchQuery = query;
+      eventsList.clear();
+      lastDocument = null;
+      hasMore = true;
+      error = null;
+      isSearching = query.isNotEmpty;
+    });
+    _initialFetch();
+  }
+
+  Widget _buildEventsList() {
+    if (isLoading && eventsList.isEmpty) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Loading events...'),
+          ],
+        ),
+      );
+    }
+
+    if (error != null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Error: $error'),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: refresh,
+              child: const Text('Retry'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    if (eventsList.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.event_busy,
+              size: 64,
+              color: AppColors.gray1,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              isSearching
+                  ? 'No events found matching your search'
+                  : 'No events available',
+              style: AppTypography.bodyMedium,
+            ),
+            if (isSearching || currentFilters.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  searchController.clear();
+                  setState(() {
+                    searchQuery = '';
+                    currentFilters = {};
+                    isSearching = false;
+                  });
+                  refresh();
+                },
+                child: const Text('Clear Filters'),
+              ),
+            ],
+          ],
+        ),
+      );
+    }
+
+    return NotificationListener<ScrollNotification>(
+      onNotification: (ScrollNotification scrollInfo) {
+        if (!isLoading &&
+            hasMore &&
+            scrollInfo.metrics.pixels == scrollInfo.metrics.maxScrollExtent) {
+          fetchEvents();
+        }
+        return true;
+      },
+      child: RefreshIndicator(
+        onRefresh: refresh,
+        child: ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: eventsList.length + (hasMore ? 1 : 0),
+          itemBuilder: (context, index) {
+            if (index == eventsList.length) {
+              return hasMore
+                  ? const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : const SizedBox.shrink();
+            }
+
+            final event = eventsList[index];
+            String id = const Uuid().v4();
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EventScreen(
+                        event: event,
+                        identity: id,
+                      ),
+                    ),
+                  );
+                },
+                child: EventCardSmall(
+                  event: event,
+                  identity: id,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
   }
 
   @override
@@ -87,9 +306,6 @@ class _AllEventsScreenState extends State<AllEventsScreen> {
                   controller: searchController,
                   onTapOutside: (event) {
                     FocusScope.of(context).unfocus();
-                    setState(() {
-                      searchController.clear();
-                    });
                   },
                   hintText: 'Search for events ...',
                   hintStyle: AppTypography.cardTitle.copyWith(
@@ -109,30 +325,35 @@ class _AllEventsScreenState extends State<AllEventsScreen> {
                     size: 24,
                   ),
                   trailing: [
-                    IconButton(
-                      icon: const Icon(
-                        Icons.filter_list,
-                        color: AppColors.white,
+                    if (currentFilters.isNotEmpty)
+                      Badge(
+                        backgroundColor: AppColors.primary,
+                        child: IconButton(
+                          icon: const Icon(
+                            Icons.filter_list,
+                            color: AppColors.white,
+                          ),
+                          splashRadius: 24,
+                          tooltip: 'Filter events',
+                          onPressed: () => _showFilterBottomSheet(),
+                        ),
+                      )
+                    else
+                      IconButton(
+                        icon: const Icon(
+                          Icons.filter_list,
+                          color: AppColors.white,
+                        ),
+                        splashRadius: 24,
+                        tooltip: 'Filter events',
+                        onPressed: () => _showFilterBottomSheet(),
                       ),
-                      splashRadius: 24,
-                      tooltip: 'Filter events',
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) => const FilterBottomSheet(),
-                        );
-                      },
-                    ),
                   ],
-                  onSubmitted: (value) {
-                    if (value.isNotEmpty) {
-                      // Implement search functionality
-                    }
-                  },
+                  onSubmitted: handleSearch,
                   onChanged: (value) {
-                    setState(() {
-                      // Update search results in real-time if needed
-                    });
+                    if (value.isEmpty && searchQuery.isNotEmpty) {
+                      handleSearch('');
+                    }
                   },
                 ),
               ),
@@ -145,79 +366,14 @@ class _AllEventsScreenState extends State<AllEventsScreen> {
     );
   }
 
-  Widget _buildEventsList() {
-    if (isLoading && eventsList.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (error != null && eventsList.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Error: $error'),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: fetchEvents,
-              child: const Text('Retry'),
-            ),
-          ],
-        ),
-      );
-    }
-
-    if (eventsList.isEmpty) {
-      return const Center(child: Text('No events available'));
-    }
-
-    return RefreshIndicator(
-      onRefresh: () async {
-        eventsList.clear();
-        hasMore = true;
-        await fetchEvents();
-      },
-      child: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: eventsList.length + (hasMore ? 1 : 0),
-        itemBuilder: (context, index) {
-          if (index == eventsList.length) {
-            if (isLoading) {
-              return const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            } else {
-              fetchEvents();
-              return const SizedBox.shrink();
-            }
-          }
-
-          final event = eventsList[index];
-          String id = const Uuid().v4();
-
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 1),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EventScreen(
-                      event: event,
-                      identity: id,
-                    ),
-                  ),
-                );
-              },
-              child: EventCardSmall(
-                event: event,
-                identity: id,
-              ),
-            ),
-          );
-        },
+  void _showFilterBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => FilterBottomSheet(
+        currentFilters: currentFilters,
+        onApplyFilters: updateFilters,
       ),
     );
   }

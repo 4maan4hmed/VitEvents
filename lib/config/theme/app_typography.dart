@@ -61,4 +61,10 @@ class AppTypography {
   );
 
   static var cardSubtitle;
+
+  static var headline6;
+
+  static var subtitle1;
+
+  static var bodyText2;
 }

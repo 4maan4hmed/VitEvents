@@ -31,6 +31,7 @@ class Event {
     return Event(
         id: doc.id,
         title: data['title'] ?? '',
+        
         date: data['date'] ?? '',
         month: data['month'] ?? '',
         price: (data['price'] ?? 0).toDouble(),

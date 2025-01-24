@@ -13,7 +13,7 @@ import '../home/event_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-               
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -29,6 +29,15 @@ class _HomeScreenState extends State<HomeScreen> {
   final int upcomingEventsSeed = Random().nextInt(1000);
   final int nearbyEventsSeed = Random().nextInt(1000);
   final int popularEventsSeed = Random().nextInt(1000);
+
+  Map<String, dynamic> currentFilters = {};
+
+  void updateFilters(Map<String, dynamic> newFilters) {
+    setState(() {
+      currentFilters = newFilters;
+      fetchEvents();
+    });
+  }
 
   @override
   void initState() {
@@ -212,7 +221,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {
                         showModalBottomSheet(
                           context: context,
-                          builder: (context) => const FilterBottomSheet(),
+                          builder: (context) => FilterBottomSheet(
+                            currentFilters: currentFilters,
+                            onApplyFilters: updateFilters,
+                          ),
                         );
                       },
                     ),
