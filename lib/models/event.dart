@@ -11,6 +11,7 @@ class Event {
   final String bio;
   final bool isSaved;
   final Timestamp datetimeStart;
+  final List<String> tags; // Add this field
 
   const Event({
     this.id,
@@ -23,27 +24,36 @@ class Event {
     required this.bio,
     required this.isSaved,
     required this.datetimeStart,
+    required this.tags, // Add this field
   });
 
   // Create Event from Firestore document
   factory Event.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return Event(
-        id: doc.id,
-        title: data['title'] ?? '',
-        
-        date: data['date'] ?? '',
-        month: data['month'] ?? '',
-        price: (data['price'] ?? 0).toDouble(),
-        imageUrl: data['imageUrl'] ?? '',
-        distance: data['location'] ?? 'N/A',
-        bio: data['bio'] ??
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-        isSaved: data['is_saved'] ?? false,
-        datetimeStart: data['start_time'] ?? Timestamp(123, 123));
+      id: doc.id,
+      title: data['title'] ?? '',
+      date: data['date'] ?? '',
+      month: data['month'] ?? '',
+      price: (data['price'] ?? 0).toDouble(),
+      imageUrl: data['imageUrl'] ?? '',
+      distance: data['location'] ?? 'N/A',
+      bio: data['bio'] ??
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+      isSaved: data['is_saved'] ?? false,
+      datetimeStart: data['start_time'] ?? Timestamp(123, 123),
+      tags: List<String>.from(data['tags'] ?? []), 
+    );
   }
 
-  
+  // Convert Event to Firestore document
+  Map<String, dynamic> toFirestore() {
+    return {
+      'is_saved': isSaved,
+      'tags': tags, 
+    };
+  }
+
   Future<List<Event>> getEvents({
     int? limit,
     Map<String, dynamic>? whereClause,
@@ -52,7 +62,29 @@ class Event {
 
     if (whereClause != null) {
       whereClause.forEach((key, value) {
-        query = query.where(key, isEqualTo: value);
+        if (value is Map<String, dynamic>) {
+          // Handle complex filters with operators
+          if (value.containsKey('operator') && value.containsKey('value')) {
+            switch (value['operator']) {
+              case '>=':
+                query =
+                    query.where(key, isGreaterThanOrEqualTo: value['value']);
+                break;
+              case '<=':
+                query = query.where(key, isLessThanOrEqualTo: value['value']);
+                break;
+              case '==':
+                query = query.where(key, isEqualTo: value['value']);
+                break;
+              case 'array-contains':
+                query = query.where(key, arrayContains: value['value']);
+                break;
+            }
+          }
+        } else {
+          // Handle simple equality filters
+          query = query.where(key, isEqualTo: value);
+        }
       });
     }
 
@@ -62,13 +94,6 @@ class Event {
 
     final snapshot = await query.get();
     return snapshot.docs.map((doc) => Event.fromFirestore(doc)).toList();
-  }
-
-  // Convert Event to Firestore document
-  Map<String, dynamic> toFirestore() {
-    return {
-      'is_saved': isSaved,
-    };
   }
 
   Future<void> updateSavedStatus(bool newStatus) async {

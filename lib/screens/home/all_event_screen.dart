@@ -1,5 +1,3 @@
-// all_events_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
@@ -60,6 +58,8 @@ class _AllEventsScreenState extends State<AllEventsScreen> {
       lastDocument = null;
       hasMore = true;
       error = null;
+      searchQuery = ''; // Clear search query
+      isSearching = false; // Reset search state
     });
     await _initialFetch();
   }
@@ -77,44 +77,35 @@ class _AllEventsScreenState extends State<AllEventsScreen> {
         error = null;
       });
 
-      // Combine search query and filters
-      Map<String, dynamic> whereClause = {...currentFilters};
-      whereClause.forEach((key, value) {
-        print(' Key : $key :: Value : $value');
-      });
-      // Add search query to where clause if not empty
-      if (searchQuery.isNotEmpty) {
-        whereClause['name_lowercase'] = {
-          'operator': '>=',
-          'value': searchQuery.toLowerCase(),
-        };
-      }
-
-
+      // Fetch events from Firestore with filters and pagination
       final QuerySnapshot eventsSnapshot =
           await _eventService.getEventsSnapshot(
         limit: _pageSize,
-        whereClause: whereClause,
+        whereClause: currentFilters, // Apply filters
         lastDocument: lastDocument,
       );
 
-      print('whereClause : $whereClause');
-      print('lastDocument : $lastDocument');
-      print('searchQuery : $searchQuery');
-      print('searchController : ${searchController.text}');
-
       if (!mounted) return;
 
+      // Map Firestore documents to Event objects
       final List<Event> newEvents = eventsSnapshot.docs
           .map((doc) => Event.fromFirestore(
               doc as DocumentSnapshot<Map<String, dynamic>>))
           .toList();
 
+      // Filter events locally using search query
+      final List<Event> filteredEvents = searchQuery.isEmpty
+          ? newEvents // No search query, return all events
+          : newEvents
+              .where((event) =>
+                  event.title.toLowerCase().contains(searchQuery.toLowerCase()))
+              .toList();
+
       setState(() {
         if (lastDocument == null) {
-          eventsList = newEvents;
+          eventsList = filteredEvents;
         } else {
-          eventsList.addAll(newEvents);
+          eventsList.addAll(filteredEvents);
         }
 
         hasMore = newEvents.length == _pageSize;
@@ -137,6 +128,7 @@ class _AllEventsScreenState extends State<AllEventsScreen> {
 
     setState(() {
       currentFilters = newFilters;
+      debugPrint('Updated filters: $currentFilters');
       eventsList.clear();
       lastDocument = null;
       hasMore = true;

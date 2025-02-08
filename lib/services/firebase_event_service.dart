@@ -1,4 +1,3 @@
-// firebase_event_service.dart
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/event.dart';
 
@@ -95,8 +94,7 @@ class FirebaseEventService {
     try {
       final lowerSearchTerm = searchTerm.toLowerCase();
 
-      print(
-          'Searching events where title_lowercase starts with: $lowerSearchTerm');
+      print('Searching events where title starts with: $lowerSearchTerm');
 
       final querySnapshot = await _eventsCollection
           .where('title', isGreaterThanOrEqualTo: lowerSearchTerm)

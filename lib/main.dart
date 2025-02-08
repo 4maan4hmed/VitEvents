@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_2/screens/home/main_navigation_screen.dart';
+
+import 'package:flutter_application_2/screens/Login/onboarding.dart';
 import 'config/theme/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
       title: 'Event Hub',
       theme: appTheme(),
       debugShowCheckedModeBanner: false,
-      home: const MainNavigationScreen(),
+      home: const Onboarding(),
     );
   }
 }

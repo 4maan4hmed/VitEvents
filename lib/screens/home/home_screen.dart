@@ -221,6 +221,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {
                         showModalBottomSheet(
                           context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
                           builder: (context) => FilterBottomSheet(
                             currentFilters: currentFilters,
                             onApplyFilters: updateFilters,
@@ -286,6 +288,18 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showFilterBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => FilterBottomSheet(
+        currentFilters: currentFilters,
+        onApplyFilters: updateFilters,
       ),
     );
   }

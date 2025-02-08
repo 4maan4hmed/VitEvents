@@ -67,4 +67,6 @@ class AppTypography {
   static var subtitle1;
 
   static var bodyText2;
+
+  static var headingXL;
 }
