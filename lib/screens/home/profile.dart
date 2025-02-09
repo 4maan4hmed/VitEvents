@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_2/services/firebase_auth_service.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  ProfileScreen({super.key});
+  final FirebaseAuthService _authService = FirebaseAuthService();
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: Center(
-        child: Text('Profile Screen'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Profile Screen'),
+            const SizedBox(height: 16.0),
+            Container(
+                child: ElevatedButton(
+                    onPressed: () => _authService.signOut(),
+                    child: const Text("Sign Out"))),
+          ],
+        ),
       ),
     );
   }

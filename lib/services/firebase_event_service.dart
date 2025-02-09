@@ -13,11 +13,6 @@ class FirebaseEventService {
     DocumentSnapshot? lastDocument,
   }) async {
     try {
-      print('Building Firebase query with the following parameters:');
-      print('Limit: $limit, WhereClause: $whereClause');
-      if (lastDocument != null)
-        print('Pagination from document ID: ${lastDocument.id}');
-
       Query query = _eventsCollection;
 
       // Apply filters
@@ -25,8 +20,6 @@ class FirebaseEventService {
         if (value is Map<String, dynamic>) {
           // Complex filters with operators
           if (value.containsKey('operator') && value.containsKey('value')) {
-            print(
-                'Applying filter: $key ${value['operator']} ${value['value']}');
             switch (value['operator']) {
               case '>=':
                 query =
@@ -45,7 +38,6 @@ class FirebaseEventService {
           }
         } else {
           // Simple equality filters
-          print('Applying simple filter: $key = $value');
           query = query.where(key, isEqualTo: value);
         }
       });
@@ -55,13 +47,10 @@ class FirebaseEventService {
         query = query.startAfterDocument(lastDocument);
       }
 
-      print('Executing query with limit $limit');
       final querySnapshot = await query.limit(limit).get();
 
-      print('Query completed. Fetched ${querySnapshot.docs.length} documents.');
       return querySnapshot;
     } catch (e) {
-      print('Error in getEventsSnapshot: $e');
       throw Exception('Error fetching events snapshot: $e');
     }
   }
@@ -80,10 +69,8 @@ class FirebaseEventService {
         lastDocument: lastDocument,
       );
 
-      print('Mapping Firestore documents to Event models.');
       return querySnapshot.docs.map((doc) => Event.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Error in getEvents: $e');
       throw Exception('Error fetching events: $e');
     }
   }
@@ -93,20 +80,13 @@ class FirebaseEventService {
       {int limit = 10}) async {
     try {
       final lowerSearchTerm = searchTerm.toLowerCase();
-
-      print('Searching events where title starts with: $lowerSearchTerm');
-
       final querySnapshot = await _eventsCollection
           .where('title', isGreaterThanOrEqualTo: lowerSearchTerm)
           .where('title', isLessThanOrEqualTo: '$lowerSearchTerm\uf8ff')
           .limit(limit)
           .get();
-
-      print(
-          'Search query completed. Found ${querySnapshot.docs.length} results.');
       return querySnapshot.docs.map((doc) => Event.fromFirestore(doc)).toList();
     } catch (e) {
-      print('Error in searchEventsByTitle: $e');
       throw Exception('Error searching events by title: $e');
     }
   }
@@ -116,14 +96,10 @@ class FirebaseEventService {
     try {
       final eventMap = event.toFirestore();
       eventMap['title_lowercase'] = event.title.toLowerCase();
-
-      print('Adding event: $eventMap');
       final docRef = await _eventsCollection.add(eventMap);
 
-      print('Event added successfully with ID: ${docRef.id}');
       return docRef.id;
     } catch (e) {
-      print('Error in addEvent: $e');
       throw Exception('Error adding event: $e');
     }
   }
@@ -134,12 +110,8 @@ class FirebaseEventService {
       final eventMap = event.toFirestore();
       eventMap['title_lowercase'] = event.title.toLowerCase();
 
-      print('Updating event with ID: $id. Data: $eventMap');
       await _eventsCollection.doc(id).update(eventMap);
-
-      print('Event updated successfully for ID: $id');
     } catch (e) {
-      print('Error in updateEvent: $e');
       throw Exception('Error updating event: $e');
     }
   }
@@ -147,12 +119,8 @@ class FirebaseEventService {
   /// Deletes an event from Firestore by its document ID.
   Future<void> deleteEvent(String id) async {
     try {
-      print('Deleting event with ID: $id');
       await _eventsCollection.doc(id).delete();
-
-      print('Event deleted successfully for ID: $id');
     } catch (e) {
-      print('Error in deleteEvent: $e');
       throw Exception('Error deleting event: $e');
     }
   }
