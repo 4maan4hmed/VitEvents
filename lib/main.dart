@@ -22,7 +22,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Event Hub',
       theme: appTheme(),
-      // Check if user is logged in and redirect accordingly
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
