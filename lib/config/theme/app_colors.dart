@@ -24,4 +24,10 @@ class AppColors {
   static const cardDateBackground = Color.fromARGB(165, 0, 0, 0);
   static const cardDateText = Color(0xFFFFFFFF);
   static const priceText = Color(0xFF191975);
+
+  static var textSecondary = blueDark;
+
+  static var glassDark = gray2;
+
+  static var glassLight = gray;
 }

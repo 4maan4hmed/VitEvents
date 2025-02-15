@@ -69,7 +69,8 @@ class _EventScreenState extends State<EventScreen> {
                   child: Image.network(
                     widget.event.imageUrl,
                     fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {                      return Container(
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
                         color: Colors.grey.shade200,
                         child: const Icon(Icons.error_outline),
                       );

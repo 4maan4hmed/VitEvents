@@ -2,7 +2,23 @@ import 'package:flutter/material.dart';
 import 'app_colors.dart';
 import 'app_typography.dart';
 
-
+BoxDecoration glassEffect({double radius = 20}) {
+  return BoxDecoration(
+    color: AppColors.glassLight,
+    borderRadius: BorderRadius.circular(radius),
+    boxShadow: [
+      BoxShadow(
+        color: AppColors.glassDark,
+        blurRadius: 10,
+        spreadRadius: 1,
+      ),
+    ],
+    border: Border.all(
+      color: AppColors.glassLight,
+      width: 1.5,
+    ),
+  );
+}
 /// Main application theme
 ThemeData appTheme() {
   return ThemeData(
