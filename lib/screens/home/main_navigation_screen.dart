@@ -6,7 +6,6 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 
 import 'profile.dart';
 import 'saved.dart';
-
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
 
@@ -16,16 +15,34 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _selectedIndex = 0;
-  // ignore: unused_field
   int _prevIndex = 0;
+  String? _searchQuery;
+
+  void handleSearchSubmitted(int index, String searchQuery) {
+    setState(() {
+      _prevIndex = _selectedIndex;
+      _selectedIndex = index;
+      _searchQuery = searchQuery;
+    });
+  }
 
   // List of screens to display
-  final List<Widget> _screens = [
-    const HomeScreen(),
-    const AllEventsScreen(),
-    const SavedScreen(),
-    ProfileScreen(),
-  ];
+  late final List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      HomeScreen(
+        onSearchSubmitted: handleSearchSubmitted,
+      ),
+      AllEventsScreen(
+        initialSearchValue: _searchQuery,
+      ),
+      const SavedScreen(),
+      ProfileScreen(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +51,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       bottomNavigationBar: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         child: GNav(
-          selectedIndex: _selectedIndex, // Add this to control the selected tab
+          selectedIndex: _selectedIndex,
           tabBorderRadius: 40,
           tabActiveBorder: Border.all(color: AppColors.blueDark, width: 1.5),
           gap: 8,

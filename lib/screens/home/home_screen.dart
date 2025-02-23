@@ -12,7 +12,11 @@ import '../../services/firebase_event_service.dart';
 import '../home/event_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final Function(int, String)? onSearchSubmitted;
+  const HomeScreen({
+    super.key,
+    this.onSearchSubmitted,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -232,14 +236,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                   onSubmitted: (value) {
-                    if (value.isNotEmpty) {
-                      // Implement search functionality
+                    if (value.isNotEmpty && widget.onSearchSubmitted != null) {
+                      widget.onSearchSubmitted!(
+                          1, value); // 1 is the index for AllEventsScreen
                     }
-                  },
-                  onChanged: (value) {
-                    setState(() {
-                      // Update search results in real-time if needed
-                    });
                   },
                 )),
             const SizedBox(height: 30),

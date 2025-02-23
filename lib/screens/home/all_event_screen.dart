@@ -13,7 +13,14 @@ import 'package:flutter_application_2/screens/home/event_screen.dart';
 import 'package:flutter_application_2/widgets/events/event_card_small.dart';
 
 class AllEventsScreen extends StatefulWidget {
-  const AllEventsScreen({super.key});
+  final String? initialSearchValue;
+  final TextEditingController? searchController;
+
+  const AllEventsScreen({
+    super.key,
+    this.initialSearchValue,
+    this.searchController,
+  });
 
   @override
   State<AllEventsScreen> createState() => _AllEventsScreenState();
@@ -23,7 +30,7 @@ class _AllEventsScreenState extends State<AllEventsScreen> {
   List<Event> eventsList = [];
   bool isLoading = false;
   String? error;
-  final TextEditingController searchController = TextEditingController();
+  TextEditingController searchController = TextEditingController();
   final FirebaseEventService _eventService = FirebaseEventService();
   bool hasMore = true;
   static const int _pageSize = 10;
@@ -37,12 +44,20 @@ class _AllEventsScreenState extends State<AllEventsScreen> {
   @override
   void initState() {
     super.initState();
-    _initialFetch();
+    // Use the passed controller or create a new one
+    searchController = widget.searchController ?? TextEditingController();
+    if (widget.initialSearchValue != null && widget.searchController == null) {
+      searchController.text = widget.initialSearchValue!;
+    }
   }
 
   @override
+  @override
   void dispose() {
-    searchController.dispose();
+    // Only dispose the controller if we created it
+    if (widget.searchController == null) {
+      searchController.dispose();
+    }
     super.dispose();
   }
 
