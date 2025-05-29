@@ -26,8 +26,9 @@ The **VIT Events App** is a cross-platform mobile application built using Flutte
 
 </div>
 
-### 🎥 Showreel  
-[Showreel.mp4](https://github.com/4maan4hmed/VitEvents/blob/master/Media/Showreel-Grid-Mobile-%5Bremix%5D.mp4)
+## 🎥 App Showreel
+
+[![Watch the video](https://img.youtube.com/vi/G6K3pXRC4Yw/0.jpg)](https://youtu.be/G6K3pXRC4Yw)
 
 
 ---
