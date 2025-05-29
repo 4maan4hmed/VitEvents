@@ -53,5 +53,3 @@ flutter run
 
 **Amaan Ahmad**
 VIT Chennai | Electronics & Communication Engineering
-
-```
