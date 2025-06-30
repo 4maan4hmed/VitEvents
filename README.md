@@ -28,7 +28,7 @@ The **VIT Events App** is a cross-platform mobile application built using Flutte
 
 ## 🎥 App Showreel
 
-[![Watch the video](https://img.youtube.com/vi/G6K3pXRC4Yw/0.jpg)](https://youtu.be/G6K3pXRC4Yw)
+[![Watch the video](https://img.youtube.com/vi/G6K3pXRC4Yw/0.jpg)](https://www.linkedin.com/feed/update/urn:li:activity:7336095860503605248/)
 
 
 ---
